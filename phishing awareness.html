@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phishing Awareness Analyzer</title>
+
+<style>
+    body{
+        font-family: Arial, sans-serif;
+        background:#f4f4f4;
+        text-align:center;
+    }
+
+    .container{
+        width:600px;
+        margin:40px auto;
+        background:white;
+        padding:20px;
+        border-radius:10px;
+        box-shadow:0 0 10px gray;
+    }
+
+    textarea{
+        width:95%;
+        height:180px;
+        padding:10px;
+        font-size:16px;
+    }
+
+    button{
+        padding:10px 20px;
+        font-size:16px;
+        margin-top:15px;
+        cursor:pointer;
+    }
+
+    #result{
+        text-align:left;
+        margin-top:20px;
+    }
+
+    h3{
+        color:#d9534f;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Phishing Awareness Analyzer</h2>
+
+    <p>Paste an email or message below:</p>
+
+    <textarea id="message" placeholder="Paste email or message here..."></textarea>
+
+    <br>
+
+    <button onclick="analyzeMessage()">Analyze</button>
+
+    <div id="result"></div>
+
+</div>
+
+<script>
+
+function analyzeMessage(){
+
+    let text = document.getElementById("message").value.toLowerCase();
+
+    let redFlags = [];
+
+    let keywords = [
+        "urgent",
+        "verify",
+        "account",
+        "password",
+        "bank",
+        "click here",
+        "login",
+        "winner",
+        "prize",
+        "free",
+        "limited time",
+        "update",
+        "confirm",
+        "security alert"
+    ];
+
+    keywords.forEach(function(word){
+        if(text.includes(word)){
+            redFlags.push("Suspicious keyword found: " + word);
+        }
+    });
+
+    if(text.includes("http://")){
+        redFlags.push("Uses an unsecured HTTP link.");
+    }
+
+    if(text.includes("bit.ly") ||
+       text.includes("tinyurl") ||
+       text.includes("goo.gl")){
+        redFlags.push("Shortened URL detected.");
+    }
+
+    if(text.includes("@gmail.com") ||
+       text.includes("@yahoo.com")){
+        redFlags.push("Message may come from a free email address instead of an official company domain.");
+    }
+
+    let result = "<h3>Analysis Result</h3>";
+
+    if(redFlags.length==0){
+        result += "<p><b>No common phishing signs detected.</b></p>";
+        result += "<p>Always verify the sender before clicking links or sharing personal information.</p>";
+    }
+    else{
+
+        result += "<p><b>Possible Phishing Attempt!</b></p>";
+
+        result += "<h4>Red Flags Found:</h4><ul>";
+
+        redFlags.forEach(function(flag){
+            result += "<li>" + flag + "</li>";
+        });
+
+        result += "</ul>";
+
+        result += "<h4>Why is this unsafe?</h4>";
+
+        result += "<p>Phishing messages often try to create panic, ask for passwords or personal information, use suspicious links, or impersonate trusted organizations. Clicking unknown links or sharing sensitive information can lead to identity theft, financial loss, or malware infection.</p>";
+    }
+
+    document.getElementById("result").innerHTML = result;
+}
+
+</script>
+
+</body>
+</html>
